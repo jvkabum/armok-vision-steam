@@ -14,12 +14,11 @@
     Right click drag rotates the view.
 
 *** Installation ***
-    At a minimum, Armok Vision needs a copy of Dwarf Fortress with a recent build of DFHack installed
-on top of it. 
-    For a complete experience, you either need a copy of DFHack built after the current version of
-Armok Vision was released, or an updated RemoteFortressReader plugin for your platform. If none is
-available, you can follow the instructions at https://github.com/DFHack/dfhack/blob/master/docs/Compile.rst
-to build your own. You will need to build from the develop branch of DFHack.
+    Armok Vision requires Dwarf Fortress and DFHack built for the same DF version (e.g. DF 53.10
+with DFHack 53.10-r1). Supported: DF 50.04+ (Steam/Premium and current Classic).
+    Install DFHack on top of your DF folder. For a build that matches your DF version, see
+https://docs.dfhack.org/ or compile from the develop branch:
+https://github.com/DFHack/dfhack/blob/master/docs/Compile.rst
 
 *** Support Me ***
     If you'd like to support my efforts, you can become my patron at

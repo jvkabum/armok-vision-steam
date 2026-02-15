@@ -1,7 +1,8 @@
 syntax = "proto2";
-package DwarfControl;
 
 //Attempts to provide a complete framework for reading everything from a fortress needed for vizualization
+package DwarfControl;
+
 option optimize_for = LITE_RUNTIME;
 
 // Plugin: RemoteFortressReader

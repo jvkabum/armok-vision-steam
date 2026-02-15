@@ -1,1 +1,1 @@
-C:/Users/japam/source/repos/dfhack/plugins/proto
+c:\git\dfhack-develop\plugins\remotefortressreader\proto

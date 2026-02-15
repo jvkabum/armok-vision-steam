@@ -1945,6 +1945,15 @@ namespace RemoteFortressReader
       get { return _max_z; }
       set { _max_z = value; }
     }
+    [UnityEngine.SerializeField]
+    private bool _force_reload = default(bool);
+    [global::ProtoBuf.ProtoMember(8, IsRequired = false, Name=@"force_reload", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool force_reload
+    {
+      get { return _force_reload; }
+      set { _force_reload = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -4790,7 +4799,7 @@ namespace RemoteFortressReader
     }
     [UnityEngine.SerializeField]
     private bool _reuse = default(bool);
-    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"reuse", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.Obsolete, global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"reuse", DataFormat = global::ProtoBuf.DataFormat.Default)]
     [global::System.ComponentModel.DefaultValue(default(bool))]
     public bool reuse
     {
@@ -4823,6 +4832,33 @@ namespace RemoteFortressReader
     {
       get { return _item; }
       set { _item = value; }
+    }
+    [UnityEngine.SerializeField]
+    private bool _dead = default(bool);
+    [global::ProtoBuf.ProtoMember(11, IsRequired = false, Name=@"dead", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool dead
+    {
+      get { return _dead; }
+      set { _dead = value; }
+    }
+    [UnityEngine.SerializeField]
+    private bool _fast = default(bool);
+    [global::ProtoBuf.ProtoMember(12, IsRequired = false, Name=@"fast", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool fast
+    {
+      get { return _fast; }
+      set { _fast = value; }
+    }
+    [UnityEngine.SerializeField]
+    private bool _creeping = default(bool);
+    [global::ProtoBuf.ProtoMember(13, IsRequired = false, Name=@"creeping", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool creeping
+    {
+      get { return _creeping; }
+      set { _creeping = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -5108,8 +5144,20 @@ namespace RemoteFortressReader
       [global::ProtoBuf.ProtoEnum(Name=@"WEST", Value=3)]
       WEST = 3,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"NONE", Value=4)]
-      NONE = 4
+      [global::ProtoBuf.ProtoEnum(Name=@"NORTHEAST", Value=4)]
+      NORTHEAST = 4,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SOUTHEAST", Value=5)]
+      SOUTHEAST = 5,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"SOUTHWEST", Value=6)]
+      SOUTHWEST = 6,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NORTHWEST", Value=7)]
+      NORTHWEST = 7,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"NONE", Value=8)]
+      NONE = 8
     }
   
     [global::ProtoBuf.ProtoContract(Name=@"TileDigDesignation")]
