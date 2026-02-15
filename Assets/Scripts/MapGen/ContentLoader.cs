@@ -1,4 +1,4 @@
-﻿using hqx;
+using hqx;
 using MaterialStore;
 using System;
 using System.Collections;
@@ -316,7 +316,11 @@ public class ContentLoader : MonoBehaviour
         specialTextureStorage = new TextureStorage();
 
         Debug.Log("Compiling material shape textures.");
-        shapeTextureStorage.AddTextureArray(Resources.Load<Texture2DArray>("shapeTextures"));
+        var shapeTextures = Resources.Load<Texture2DArray>("shapeTextures");
+        if (shapeTextures != null)
+            shapeTextureStorage.AddTextureArray(shapeTextures);
+        else
+            Debug.LogWarning("shapeTextures not found. Run Mytools → Build Material Collection in the Unity Editor, then rebuild.");
 
         DefaultShapeTexIndex = shapeTextureStorage.AddTexture(CreateFlatTexture(new Color(1f, 0.5f, 1f, 0.5f)));
         DefaultSpecialTexIndex = specialTextureStorage.AddTexture(Texture2D.blackTexture);
@@ -379,15 +383,37 @@ public class ContentLoader : MonoBehaviour
         mainProgressBar.gameObject.SetActive(true);
         subProgressBar.gameObject.SetActive(true);
         watch.Start();
+        string indexPath = Application.streamingAssetsPath + "/index.txt";
+        if (!File.Exists(indexPath))
+        {
+            Debug.LogError("Content index not found: " + indexPath + ". Run the game from the build folder that contains Armok Vision_Data/StreamingAssets.");
+            mainProgressBar.SetProgress("Error: Content files not found. Run from the folder that contains Armok Vision_Data/StreamingAssets.");
+            subProgressBar.SetProgress(indexPath);
+            yield return null;
+            mainProgressBar.gameObject.SetActive(false);
+            subProgressBar.gameObject.SetActive(false);
+            yield break;
+        }
         if(GameMap.Instance != null)
             GameMap.Instance.ShowHelp();
-        PatternTextureArray = Resources.Load<Texture2DArray>("patternTextures");
+        var patternTextures = Resources.Load<Texture2DArray>("patternTextures");
+        if (patternTextures == null)
+        {
+            Debug.LogError("patternTextures not found. Run Mytools → Build Material Collection in the Unity Editor, then rebuild.");
+            mainProgressBar.SetProgress("Error: Material textures not found. Run Mytools → Build Material Collection in the Editor, then rebuild.");
+            subProgressBar.SetProgress("Missing: Resources/patternTextures.asset");
+            yield return null;
+            mainProgressBar.gameObject.SetActive(false);
+            subProgressBar.gameObject.SetActive(false);
+            yield break;
+        }
+        PatternTextureArray = patternTextures;
         PatternTextureDepth = PatternTextureArray.depth;
         Shader.SetGlobalTexture("_MatTexArray", PatternTextureArray);
         float totalItems = LoadCallbacks.Count + 2; //Streaming assets, finalizations, and load callbacks.
         float doneItems = 0;
         mainProgressBar.SetProgress(doneItems / totalItems);
-        yield return StartCoroutine(ParseContentIndexFile(Application.streamingAssetsPath + "/index.txt"));
+        yield return StartCoroutine(ParseContentIndexFile(indexPath));
         doneItems++;
         mainProgressBar.SetProgress(doneItems / totalItems);
         yield return StartCoroutine(FinalizeTextureAtlases());
@@ -419,35 +445,36 @@ public class ContentLoader : MonoBehaviour
     IEnumerator ParseContentIndexFile(string path)
     {
         mainProgressBar.SetProgress("Loading Index File: " + path);
-
-        string line;
-        List<string> fileArray = new List<string>(); //This allows us to parse the file in reverse.
-        StreamReader file = new StreamReader(path);
-        while ((line = file.ReadLine()) != null)
+        List<string> fileArray = null;
+        try
         {
-            line = line.Trim(); //remove trailing spaces
-            if (string.IsNullOrEmpty(line))
-                continue;
-            if (line[0] == '#') //Allow comments
-                continue;
-
-            fileArray.Add(line);
+            string line;
+            fileArray = new List<string>();
+            using (StreamReader file = new StreamReader(path))
+            {
+                while ((line = file.ReadLine()) != null)
+                {
+                    line = line.Trim();
+                    if (string.IsNullOrEmpty(line))
+                        continue;
+                    if (line[0] == '#')
+                        continue;
+                    fileArray.Add(line);
+                }
+            }
         }
-        file.Close();
-        string filePath;
-
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+            mainProgressBar.SetProgress("Error loading: " + ex.Message);
+        }
+        if (fileArray == null)
+            yield break;
         for (int i = fileArray.Count - 1; i >= 0; i--)
         {
-            try
-            {
-                filePath = Path.Combine(Path.GetDirectoryName(path), fileArray[i]);
-            }
-            catch (Exception)
-            {
-                continue; //Todo: Make an error message here
-            }
+            string filePath = Path.Combine(Path.GetDirectoryName(path), fileArray[i]);
             subProgressBar.SetProgress(1.0f - (i / (float)fileArray.Count));
-            if (Directory.Exists(filePath)) //if it's a directory, just parse the contents
+            if (Directory.Exists(filePath))
             {
                 yield return ParseContentDirectory(filePath);
             }
@@ -456,12 +483,13 @@ public class ContentLoader : MonoBehaviour
                 switch (Path.GetExtension(filePath))
                 {
                     case ".txt":
-                        StreamReader mightBeRaw = new StreamReader(filePath);
-                        //first check if it's a DF raw file.
-                        if (mightBeRaw.ReadLine() == Path.GetFileNameWithoutExtension(filePath))
-                            yield return StartCoroutine(ParseContentRawFile(filePath));
-                        else
-                            yield return StartCoroutine(ParseContentIndexFile(filePath));
+                        using (StreamReader mightBeRaw = new StreamReader(filePath))
+                        {
+                            if (mightBeRaw.ReadLine() == Path.GetFileNameWithoutExtension(filePath))
+                                yield return StartCoroutine(ParseContentRawFile(filePath));
+                            else
+                                yield return StartCoroutine(ParseContentIndexFile(filePath));
+                        }
                         break;
                     case ".xml":
                         yield return StartCoroutine(ParseContentXMLFile(filePath));
@@ -477,7 +505,18 @@ public class ContentLoader : MonoBehaviour
     IEnumerator ParseContentXMLFile(string path)
     {
         subProgressBar.SetProgress("Loading XML File: " + path);
-        XElement doc = XElement.Load(path, LoadOptions.SetBaseUri | LoadOptions.SetLineInfo);
+        XElement doc = null;
+        try
+        {
+            doc = XElement.Load(path, LoadOptions.SetBaseUri | LoadOptions.SetLineInfo);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex);
+            mainProgressBar.SetProgress("Error loading: " + ex.Message);
+        }
+        if (doc == null)
+            yield break;
         while (doc != null)
         {
             switch (doc.Name.LocalName)

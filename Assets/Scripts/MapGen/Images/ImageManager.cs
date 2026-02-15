@@ -1,4 +1,4 @@
-﻿using RemoteFortressReader;
+using RemoteFortressReader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -508,7 +508,10 @@ public class ImageManager : MonoBehaviour
         float loadTotal = 0;
         if (DFConnection.Instance != null && CreatureRaws.Instance != null)
             loadTotal += CreatureRaws.Instance.Count;
-        loadTotal += ItemRaws.Instance.ItemList.Count;
+        if (ItemRaws.Instance != null && ItemRaws.Instance.ItemList != null)
+            loadTotal += ItemRaws.Instance.ItemList.Count;
+        else
+            Debug.LogWarning("ItemRaws not available; loading images with empty item list.");
         //DFTiles:
         {
             int sourceWidth = dfSpriteMap.width / 16;
@@ -562,8 +565,10 @@ public class ImageManager : MonoBehaviour
         //IMAGE_TREE:
         //IMAGE_SHAPE:
         //IMAGE_ITEM:
-        foreach (var item in ItemRaws.Instance.ItemList)
+        if (ItemRaws.Instance != null && ItemRaws.Instance.ItemList != null)
         {
+            foreach (var item in ItemRaws.Instance.ItemList)
+            {
             string token = item.id;
             Texture2D sprite = Resources.Load<Texture2D>("Images/Items/" + token);
             if (subProgressBar != null)
@@ -594,6 +599,7 @@ public class ImageManager : MonoBehaviour
                 yield return null;
                 stopWatch.Reset();
                 stopWatch.Start();
+            }
             }
         }
 

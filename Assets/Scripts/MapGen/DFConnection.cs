@@ -2,6 +2,7 @@ using AdventureControl;
 using DFHack;
 using dfproto;
 using DwarfControl;
+using MaterialStore;
 using RemoteFortressReader;
 using System;
 using System.Collections;
@@ -903,6 +904,9 @@ public sealed class DFConnection : MonoBehaviour
             CreatureTokenList.CreatureRawList = CreatureRaws.Instance.CreatureList;
             Debug.Log("Creature Raws fetched: " + CreatureRaws.Instance.CreatureList.Count);
         }
+
+        if (MaterialCollection.Instance != null)
+            MaterialCollection.Instance.Refresh();
 
         //Debug.Log("Buildingtypes fetched: " + netBuildingList.building_list.Count);
         //Debug.Log("Creature Raws fetched: " + netCreatureRawList.creature_raws.Count);

@@ -12,7 +12,7 @@ A 3d realtime visualizer for Dwarf Fortress.
 1. Install Dwarf Fortress and a current DFHack (same version as your DF, e.g. [DFHack for 53.10](https://docs.dfhack.org/)).
 2. Download Armok Vision from the forum thread.
 3. Load into a fortress mode map.
-4. Start up Armok Vision.
+4. Start up Armok Vision from the folder that contains the executable **and** the `Armok Vision_Data` folder (with `StreamingAssets` inside). Do not move only the .exe to another location, or content will fail to load. If terrain or objects appear as solid colors or stripes, the build may have been made without running **Mytools → Build Material Collection** in the Unity Editor first.
 5. Enjoy!
 
 ## To Contribute
@@ -37,7 +37,7 @@ If you know how to code and want to hack on the engine:
 3. Clone the repo with submodules: `git clone --recurse-submodules <repo-url>` (e.g. armok-vision-steam).
 4. Load the project folder in the Unity editor.
 5. **Regenerating protos (if you have DFHack):** Create `ProtoPath.txt` in the project root with the path to your DFHack plugin protos folder, e.g. `.../dfhack/plugins/remotefortressreader/proto`. Then run **Mytools → Build Proto** to copy and regenerate `Assets/RemoteClientLocal/protos.cs`.
-6. Run **Mytools → Build Material Collection**. Required after a fresh pull and after changing material files.
+6. Run **Mytools → Build Material Collection**. Required after a fresh pull, after changing material files, and **before creating a build** (File → Build Settings → Build). If you build without running it, the built game may show missing or placeholder textures (stripes, solid colors).
 7. Hack around. Check out the [issues](https://github.com/JapaMala/armok-vision/issues) to find things that need fixing / ideas that could be implemented.
 8. Submit a [pull request](https://github.com/JapaMala/armok-vision/pulls) with your changes!
 
