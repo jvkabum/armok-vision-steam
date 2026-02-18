@@ -21,14 +21,14 @@ namespace UserSettings
             switch (GameSettings.Instance.units.scaleUnits)
             {
                 case GameSettings.UnitScale.Fixed:
-                    valueLabel.text = "Fixed Size";
+                    valueLabel.text = L.Get("Fixed Size");
                     break;
                 case GameSettings.UnitScale.Logarithmic:
-                    valueLabel.text = "Logarithmic Scaling";
+                    valueLabel.text = L.Get("Logarithmic Scaling");
                     break;
                 case GameSettings.UnitScale.Real:
                 default:
-                    valueLabel.text = "Actual Size";
+                    valueLabel.text = L.Get("Actual Size");
                     break;
             }
         }

@@ -3,16 +3,14 @@ Armok Vision
 
 [Forum thread](http://www.bay12forums.com/smf/index.php?topic=146473) | [Screenshots](http://imgur.com/a/bPmeo)
 
-A 3d realtime visualizer for Dwarf Fortress.
-
-**Compatibility:** Dwarf Fortress **50.04+** (Steam/Premium and current Classic, e.g. **53.10**). Requires **DFHack** built for the same DF version. The name "armok-vision-steam" refers to the Steam release era of Dwarf Fortress (Dec 2022), not the Steamworks SDK.
+A 3d realtime visualizer for Dwarf Fortress. 
 
 ## To Use
 
-1. Install Dwarf Fortress and a current DFHack (same version as your DF, e.g. [DFHack for 53.10](https://docs.dfhack.org/)).
+1. Install Dwarf Fortress and a current DFHack.
 2. Download Armok Vision from the forum thread.
 3. Load into a fortress mode map.
-4. Start up Armok Vision from the folder that contains the executable **and** the `Armok Vision_Data` folder (with `StreamingAssets` inside). Do not move only the .exe to another location, or content will fail to load. If terrain or objects appear as solid colors or stripes, the build may have been made without running **Mytools → Build Material Collection** in the Unity Editor first.
+4. Start up Armok Vision.
 5. Enjoy!
 
 ## To Contribute
@@ -32,14 +30,13 @@ If you're an artist and want to contribute 3D models, sounds, concept art:
 #### Developers
 If you know how to code and want to hack on the engine:
 
-1. Install [Unity 2022](https://unity3d.com/get-unity) (project uses 2022.1.x). Personal Edition and Unity Hub are fine.
-2. Non-Windows users: install [Git LFS](https://git-lfs.github.com/) (test with `git lfs version`).
-3. Clone the repo with submodules: `git clone --recurse-submodules <repo-url>` (e.g. armok-vision-steam).
-4. Load the project folder in the Unity editor.
-5. **Regenerating protos (if you have DFHack):** Create `ProtoPath.txt` in the project root with the path to your DFHack plugin protos folder, e.g. `.../dfhack/plugins/remotefortressreader/proto`. Then run **Mytools → Build Proto** to copy and regenerate `Assets/RemoteClientLocal/protos.cs`.
-6. Run **Mytools → Build Material Collection**. Required after a fresh pull, after changing material files, and **before creating a build** (File → Build Settings → Build). If you build without running it, the built game may show missing or placeholder textures (stripes, solid colors).
-7. Hack around. Check out the [issues](https://github.com/JapaMala/armok-vision/issues) to find things that need fixing / ideas that could be implemented.
-8. Submit a [pull request](https://github.com/JapaMala/armok-vision/pulls) with your changes!
+1. Install [Unity 5](http://unity3d.com/get-unity). (We're using the Personal Edition, and either the classic installer or Unity Hub is fine.)
+2. Non-Windows users: install the [Git LFS](https://git-lfs.github.com/) extension if you haven't already (testable with `git lfs version`).
+3. `$ git clone --recurse-submodules --depth 1 https://github.com/JapaMala/armok-vision.git` (or without `--depth 1` if you want the full history, but it's pretty big).
+4. Load the `armok-vision` folder in the Unity editor.
+5. Run the `Mytools->Build Material Collection` menu item. This is required after a fresh pull from Git, as well as after changing any material files. 
+6. Hack around. Check out the [issues](https://github.com/JapaMala/armok-vision/issues) to find things that need fixing / ideas that could be implemented.
+7. Submit a [pull request](https://github.com/JapaMala/armok-vision/pulls) with your changes!
 
 #### Financially
 If you want to buy the lead programmer a snack, you can donate on his [Patreon Page](https://www.patreon.com/japamala)
@@ -47,7 +44,7 @@ If you want to buy the lead programmer a snack, you can donate on his [Patreon P
 ##### Structural Notes
 (Some short notes for anyone getting started with the codebase.)
 
-- Armok Vision is built with the [Unity engine](https://unity3d.com/). It connects to the [remotefortressreader](https://github.com/DFHack/dfhack/tree/develop/plugins/remotefortressreader) DFHack plugin over TCP and exchanges [protobuf messages](https://github.com/DFHack/dfhack/tree/develop/plugins/remotefortressreader/proto) (RemoteFortressReader.proto and related).
+- Armok Vision is an application built with the [Unity engine](https://unity3d.com/). It connects to the [remotefortressreader](https://github.com/DFHack/dfhack/blob/master/plugins/remotefortressreader.cpp) DFHack plugin over TCP and exchanges [protobuf-formatted messages](https://github.com/DFHack/dfhack/blob/master/plugins/proto/RemoteFortressReader.proto). (You don't need to be familiar with DFHack to work with Armok Vision.)
 - On the Unity side, the submodule [Assets/RemoteClientDF-Net](https://github.com/JapaMala/armok-vision/tree/master/Assets) contains the generated C# protobuf files, as well as classes for managing the network connection. The script [Assets/Scripts/MapGen/DFConnection.cs](https://github.com/JapaMala/armok-vision/blob/master/Assets/Scripts/MapGen/DFConnection.cs) runs the connection on a separate thread and exposes data collected from DF.
 - The script that actually manages the onscreen map is [Assets/Scripts/MapGen/GameMap.cs](https://github.com/JapaMala/armok-vision/blob/master/Assets/Scripts/MapGen/GameMap.cs), which stores the `GameObject`s representing different map chunks. It calls the scripts in [Assets/Scripts/MapGen/Meshing](https://github.com/JapaMala/armok-vision/tree/master/Assets/Scripts/MapGen/Meshing) to build the actual meshes (on separate threads).
 - Most assets - textures, 3d models, sprites, etc. - are loaded at runtime from [Assets/StreamingAssets](https://github.com/JapaMala/armok-vision/tree/master/Assets/StreamingAssets), which is copied directly to folder containing the generated app. The script that handles this is [Assets/Scripts/MapGen/ContentLoader.cs](https://github.com/JapaMala/armok-vision/blob/master/Assets/Scripts/MapGen/ContentLoader.cs).

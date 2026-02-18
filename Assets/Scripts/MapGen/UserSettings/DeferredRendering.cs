@@ -17,11 +17,11 @@ namespace UserSettings
             {
                 case true:
                     cam.renderingPath = UnityEngine.RenderingPath.DeferredShading;
-                    valueLabel.text = "Deferred";
+                    valueLabel.text = L.Get("Deferred");
                     break;
                 case false:
                     cam.renderingPath = UnityEngine.RenderingPath.Forward;
-                    valueLabel.text = "Forward";
+                    valueLabel.text = L.Get("Forward");
                     GameSettings.Instance.camera.postProcessing = false;
                     break;
             }

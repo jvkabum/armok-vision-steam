@@ -1,4 +1,4 @@
-﻿using DwarfControl;
+using DwarfControl;
 using proto.enums.ui_sidebar_mode;
 using System;
 using UnityEngine;
@@ -242,40 +242,47 @@ public class DwarfModeMenu : MonoBehaviour
         if (mode == ui_sidebar_mode.Default && !force)
             return;
         ClearMenu();
-        AddMenuButton("View Announcements");
-        AddMenuButton("Building", delegate { SetSidebar(ui_sidebar_mode.Build.ToString()); });
-        AddMenuButton("Reports");
-        AddMenuButton("Civilizations/World Info");
-        AddMenuButton("Designations", delegate { SetSidebar(ui_sidebar_mode.DesignateMine.ToString()); });
-        AddMenuButton("Set Order", delegate { SetSidebar(ui_sidebar_mode.Orders.ToString()); });
-        AddMenuButton("Unit List");
-        AddMenuButton("Lob List");
-        AddMenuButton("Military");
-        AddMenuButton("Squads", delegate { SetSidebar(ui_sidebar_mode.Squads.ToString()); });
-        AddMenuButton("Points/Routes/Notes", delegate { SetSidebar(ui_sidebar_mode.NotesPoints.ToString()); });
-        AddMenuButton("Make Burrows", delegate { SetSidebar(ui_sidebar_mode.Burrows.ToString()); });
-        AddMenuButton("Hauling", delegate { SetSidebar(ui_sidebar_mode.Hauling.ToString()); });
-        AddMenuButton("Stockpiles", delegate { SetSidebar(ui_sidebar_mode.Stockpiles.ToString()); });
-        AddMenuButton("Zones", delegate { SetSidebar(ui_sidebar_mode.Zones.ToString()); });
-        AddMenuButton("Set Building Tasks/Prefs", delegate { SetSidebar(ui_sidebar_mode.QueryBuilding.ToString()); });
-        AddMenuButton("View Rooms/Buildings");
-        AddMenuButton("View Items in Buildings", delegate { SetSidebar(ui_sidebar_mode.BuildingItems.ToString()); });
-        AddMenuButton("View Units", delegate { SetSidebar(ui_sidebar_mode.ViewUnits.ToString()); });
-        AddMenuButton("Hot Keys", delegate { SetSidebar(ui_sidebar_mode.Hotkeys.ToString()); });
-        AddMenuButton("Locations and Occupations");
-        AddMenuButton("Nobles and Administrators");
-        AddMenuButton("Status");
-        AddMenuButton("Look", delegate { SetSidebar(ui_sidebar_mode.LookAround.ToString()); });
-        AddMenuButton("Help");
-        AddMenuButton("Options");
-        AddMenuButton("Depot Access", delegate { SetSidebar(ui_sidebar_mode.DepotAccess.ToString()); });
-        pauseManager.playButton = AddMenuButton("Resume", TogglePause).gameObject;
+        AddMenuButton(L.Get("menu.view_announcements"));
+        AddMenuButton(L.Get("menu.building"), delegate { SetSidebar(ui_sidebar_mode.Build.ToString()); });
+        AddMenuButton(L.Get("menu.reports"));
+        AddMenuButton(L.Get("menu.civ_world_info"));
+        AddMenuButton(L.Get("menu.designations"), delegate { SetSidebar(ui_sidebar_mode.DesignateMine.ToString()); });
+        AddMenuButton(L.Get("menu.set_order"), delegate { SetSidebar(ui_sidebar_mode.Orders.ToString()); });
+        AddMenuButton(L.Get("menu.unit_list"));
+        AddMenuButton(L.Get("menu.lob_list"));
+        AddMenuButton(L.Get("menu.military"));
+        AddMenuButton(L.Get("menu.squads"), delegate { SetSidebar(ui_sidebar_mode.Squads.ToString()); });
+        AddMenuButton(L.Get("menu.points_routes_notes"), delegate { SetSidebar(ui_sidebar_mode.NotesPoints.ToString()); });
+        AddMenuButton(L.Get("menu.make_burrows"), delegate { SetSidebar(ui_sidebar_mode.Burrows.ToString()); });
+        AddMenuButton(L.Get("menu.hauling"), delegate { SetSidebar(ui_sidebar_mode.Hauling.ToString()); });
+        AddMenuButton(L.Get("menu.stockpiles"), delegate { SetSidebar(ui_sidebar_mode.Stockpiles.ToString()); });
+        AddMenuButton(L.Get("menu.zones"), delegate { SetSidebar(ui_sidebar_mode.Zones.ToString()); });
+        AddMenuButton(L.Get("menu.set_building_tasks_prefs"), delegate { SetSidebar(ui_sidebar_mode.QueryBuilding.ToString()); });
+        AddMenuButton(L.Get("menu.view_rooms_buildings"));
+        AddMenuButton(L.Get("menu.view_items_in_buildings"), delegate { SetSidebar(ui_sidebar_mode.BuildingItems.ToString()); });
+        AddMenuButton(L.Get("menu.view_units"), delegate { SetSidebar(ui_sidebar_mode.ViewUnits.ToString()); });
+        AddMenuButton(L.Get("menu.hotkeys"), delegate { SetSidebar(ui_sidebar_mode.Hotkeys.ToString()); });
+        AddMenuButton(L.Get("menu.locations_occupations"));
+        AddMenuButton(L.Get("menu.nobles_admins"));
+        AddMenuButton(L.Get("menu.status"));
+        AddMenuButton(L.Get("menu.look"), delegate { SetSidebar(ui_sidebar_mode.LookAround.ToString()); });
+        AddMenuButton(L.Get("menu.help"));
+        AddMenuButton(L.Get("menu.options"));
+        AddMenuButton(L.Get("menu.depot_access"), delegate { SetSidebar(ui_sidebar_mode.DepotAccess.ToString()); });
+        pauseManager.playButton = AddMenuButton(L.Get("menu.resume"), TogglePause).gameObject;
         mode = ui_sidebar_mode.Default;
     }
 
     private void TogglePause()
     {
         DFConnection.Instance.SendPauseCommand(!DFConnection.Instance.DfPauseState);
+    }
+
+    /// <summary>Reconstrói o menu principal (chamado ao mudar o idioma nas Opções).</summary>
+    public void RefreshDefaultMenu()
+    {
+        if (mode == ui_sidebar_mode.Default)
+            BuildDefaultMenu(null, true);
     }
 
     int numBuildingOptions = 0;
@@ -380,17 +387,17 @@ public class DwarfModeMenu : MonoBehaviour
             return;
         mode = sidebar.mode;
         ClearMenu();
-        AddMenuButton("Cancel", CancelButton);
-        AddMenuButton("Mine", delegate { SetSidebar(ui_sidebar_mode.DesignateMine.ToString()); });
-        AddMenuButton("Channel", delegate { SetSidebar(ui_sidebar_mode.DesignateChannel.ToString()); });
-        AddMenuButton("Up Stair", delegate { SetSidebar(ui_sidebar_mode.DesignateUpStair.ToString()); });
-        AddMenuButton("Down Stair", delegate { SetSidebar(ui_sidebar_mode.DesignateDownStair.ToString()); });
-        AddMenuButton("U/D Stair", delegate { SetSidebar(ui_sidebar_mode.DesignateUpDownStair.ToString()); });
-        AddMenuButton("Up Ramp", delegate { SetSidebar(ui_sidebar_mode.DesignateUpRamp.ToString()); });
-        AddMenuButton("Remove Up Stairs/Ramps", delegate { SetSidebar(ui_sidebar_mode.DesignateRemoveRamps.ToString()); });
-        AddMenuButton("Chop Down Trees", delegate { SetSidebar(ui_sidebar_mode.DesignateChopTrees.ToString()); });
-        AddMenuButton("Gather Plants", delegate { SetSidebar(ui_sidebar_mode.DesignateGatherPlants.ToString()); });
-        AddMenuButton("Smooth Stone", delegate { SetSidebar(ui_sidebar_mode.DesignateSmooth.ToString()); });
+        AddMenuButton(L.Get("menu.cancel"), CancelButton);
+        AddMenuButton(L.Get("menu.mine"), delegate { SetSidebar(ui_sidebar_mode.DesignateMine.ToString()); });
+        AddMenuButton(L.Get("menu.channel"), delegate { SetSidebar(ui_sidebar_mode.DesignateChannel.ToString()); });
+        AddMenuButton(L.Get("menu.up_stair"), delegate { SetSidebar(ui_sidebar_mode.DesignateUpStair.ToString()); });
+        AddMenuButton(L.Get("menu.down_stair"), delegate { SetSidebar(ui_sidebar_mode.DesignateDownStair.ToString()); });
+        AddMenuButton(L.Get("menu.up_down_stair"), delegate { SetSidebar(ui_sidebar_mode.DesignateUpDownStair.ToString()); });
+        AddMenuButton(L.Get("menu.up_ramp"), delegate { SetSidebar(ui_sidebar_mode.DesignateUpRamp.ToString()); });
+        AddMenuButton(L.Get("menu.remove_stairs_ramps"), delegate { SetSidebar(ui_sidebar_mode.DesignateRemoveRamps.ToString()); });
+        AddMenuButton(L.Get("menu.chop_trees"), delegate { SetSidebar(ui_sidebar_mode.DesignateChopTrees.ToString()); });
+        AddMenuButton(L.Get("menu.gather_plants"), delegate { SetSidebar(ui_sidebar_mode.DesignateGatherPlants.ToString()); });
+        AddMenuButton(L.Get("menu.smooth_stone"), delegate { SetSidebar(ui_sidebar_mode.DesignateSmooth.ToString()); });
         AddMenuButton("Engrave Stone", delegate { SetSidebar(ui_sidebar_mode.DesignateEngrave.ToString()); });
         AddMenuButton("Carve Fortifications", delegate { SetSidebar(ui_sidebar_mode.DesignateCarveFortification.ToString()); });
         AddMenuButton("Carve Track", delegate { SetSidebar(ui_sidebar_mode.DesignateCarveTrack.ToString()); });

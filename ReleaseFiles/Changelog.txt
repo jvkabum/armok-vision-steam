@@ -1,8 +1,3 @@
-v0.22.0
- * Compatibility with Dwarf Fortress 50.04+ (Steam/Premium) and current Classic (e.g. 53.10).
- * Protos synced with DFHack develop (plugins/remotefortressreader/proto); regenerated protos.cs.
- * Requires DFHack built for the same DF version. See README for developer ProtoPath/Build Proto steps.
-
 v0.21.0
  * Fixed compatibility with DF 0.47.04 and upwards.
  * Fixed some shader errors that probably only I care about.

@@ -9,14 +9,14 @@ namespace UserSettings
         protected override void InitValue()
         {
             slider.value = (int)GameSettings.Instance.rendering.distantTerrainDetail;
-            valueLabel.text = GameSettings.Instance.rendering.distantTerrainDetail.ToString();
+            valueLabel.text = L.Get(GameSettings.Instance.rendering.distantTerrainDetail.ToString());
             worldMap = FindObjectOfType<WorldMapMaker>();
         }
 
         protected override void OnValueChanged(float value)
         {
             GameSettings.Instance.rendering.distantTerrainDetail = (GameSettings.LandscapeDetail)value;
-            valueLabel.text = GameSettings.Instance.rendering.distantTerrainDetail.ToString();
+            valueLabel.text = L.Get(GameSettings.Instance.rendering.distantTerrainDetail.ToString());
             worldMap.gameObject.SetActive(GameSettings.Instance.rendering.distantTerrainDetail != GameSettings.LandscapeDetail.Off);
         }
     }

@@ -92,15 +92,18 @@ namespace MaterialStore
         {
             if (Resources.Load<Texture2DArray>("patternTextures") == null)
                 return;
-            PopulateMatTextures();
-            PatternTextureArray = Resources.Load<Texture2DArray>("patternTextures");
-            ShapeTextureArray = Resources.Load<Texture2DArray>("shapeTextures");
-            PatternTextureDepth = PatternTextureArray.depth;
-            ShapeTextureDepth = ShapeTextureArray.depth;
-            Shader.SetGlobalTexture("_MatTexArray", PatternTextureArray);
-            Shader.SetGlobalTexture("_ShapeMap", ShapeTextureArray);
-            Vector4 arrayCount = new Vector4(PatternTextureDepth, ShapeTextureDepth, 1, 1);
-            Shader.SetGlobalVector("_TexArrayCount", arrayCount);
+            if (MaterialRaws.Instance != null)
+            {
+                PopulateMatTextures();
+                PatternTextureArray = Resources.Load<Texture2DArray>("patternTextures");
+                ShapeTextureArray = Resources.Load<Texture2DArray>("shapeTextures");
+                PatternTextureDepth = PatternTextureArray.depth;
+                ShapeTextureDepth = ShapeTextureArray.depth;
+                Shader.SetGlobalTexture("_MatTexArray", PatternTextureArray);
+                Shader.SetGlobalTexture("_ShapeMap", ShapeTextureArray);
+                Vector4 arrayCount = new Vector4(PatternTextureDepth, ShapeTextureDepth, 1, 1);
+                Shader.SetGlobalVector("_TexArrayCount", arrayCount);
+            }
         }
     }
 }

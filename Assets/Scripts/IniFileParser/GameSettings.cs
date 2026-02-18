@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -145,6 +145,7 @@ public class GameSettings : MonoBehaviour
         public string serverAddress = "localhost";
         public int serverPort = 5000;
         public bool checkForUpdates = true;
+        public string language = "en";
     }
     [Serializable]
     public class Debug
@@ -223,6 +224,14 @@ public class GameSettings : MonoBehaviour
         if (string.IsNullOrWhiteSpace(filename))
             SetupFileName();
         SerializeIni(filename);
+    }
+
+    /// <summary>Persiste as configurações em disco (Config.json).</summary>
+    public static void Persist()
+    {
+        var gs = UnityEngine.Object.FindObjectOfType<GameSettings>();
+        if (gs != null)
+            gs.Save();
     }
 
     static void SetupFileName()

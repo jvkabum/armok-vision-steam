@@ -13,7 +13,7 @@ namespace UserSettings
         protected override void OnValueChanged(float value)
         {
             GameSettings.Instance.meshing.cornerType = (VoxelGenerator.CornerType)value;
-            valueLabel.text = GameSettings.Instance.meshing.cornerType.ToString();
+            valueLabel.text = L.Get(GameSettings.Instance.meshing.cornerType.ToString());
             gameMap.Refresh();
         }
     }

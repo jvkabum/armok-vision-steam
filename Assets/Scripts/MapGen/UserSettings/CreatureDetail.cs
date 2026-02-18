@@ -18,19 +18,19 @@ namespace UserSettings
             switch (GameSettings.Instance.units.unitDetail)
             {
                 case GameSettings.UnitDetail.None:
-                    valueLabel.text = "None";
+                    valueLabel.text = L.Get("None");
                     break;
                 case GameSettings.UnitDetail.ASCII:
-                    valueLabel.text = "ASCII";
+                    valueLabel.text = L.Get("ASCII");
                     break;
                 case GameSettings.UnitDetail.SDSprites:
-                    valueLabel.text = "Low Detail Sprites";
+                    valueLabel.text = L.Get("Low Detail Sprites");
                     break;
                 case GameSettings.UnitDetail.HDSprites:
-                    valueLabel.text = "High Detail Sprites";
+                    valueLabel.text = L.Get("High Detail Sprites");
                     break;
                 case GameSettings.UnitDetail.Models:
-                    valueLabel.text = "3D Models";
+                    valueLabel.text = L.Get("3D Models");
                     break;
                 default:
                     break;
