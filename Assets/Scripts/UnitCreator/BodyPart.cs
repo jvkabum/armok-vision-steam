@@ -863,7 +863,7 @@ public class BodyPart : MonoBehaviour
                 var color = ContentLoader.GetColor(item.item.item);
                 var index = ContentLoader.GetPatternIndex(item.item.item.material);
                 propertyBlock.SetColor("_MatColor", color);
-                propertyBlock.SetFloat("_MatIndex", index);
+                propertyBlock.SetInt("_MatIndex", index);
                 propertyBlock.SetColor("_JobColor", unit.profession_color);
                 foreach (var layerModel in layerModels)
                 {

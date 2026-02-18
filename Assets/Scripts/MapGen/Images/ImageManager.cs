@@ -489,8 +489,8 @@ public class ImageManager : MonoBehaviour
 
     public Texture2D dfSpriteMap;
 
-    public Texture2DArray imageSpriteArray;
-    public Texture2DArray imageSpriteNormals;
+    public Texture2DArray[] imageSpriteArrays;
+    public Texture2DArray[] imageSpriteNormals;
 
     Dictionary<MatPairStruct, int> ItemSpriteMap = new Dictionary<MatPairStruct, int>();
 
@@ -534,13 +534,9 @@ public class ImageManager : MonoBehaviour
                 if (subProgressBar != null)
                     subProgressBar.SetProgress(loadedCount / loadTotal, token);
                 loadedCount++;
-                Texture2D sprite = Resources.Load<Texture2D>("Images/Creatures/" + token);
-                if (sprite == null)
-                {
-                    //Try again without stupid numbers
-                    token.TrimEnd('1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '_');
-                    sprite = Resources.Load<Texture2D>("Images/Creatures/" + token);
-                }
+
+                Texture2D sprite = LoadCreatureSprite(token);
+
                 if (sprite == null)
                 {
                     Debug.LogWarning("Could not find art image for " + token);
@@ -597,18 +593,94 @@ public class ImageManager : MonoBehaviour
             }
         }
 
-        imageSpriteArray = new Texture2DArray(32, 32, textureList.Count, TextureFormat.ARGB32, false);
-        imageSpriteNormals = new Texture2DArray(32, 32, textureList.Count, TextureFormat.ARGB32, false);
-        for (int i = 0; i < textureList.Count; i++)
+        // Multi-album support (2048 textures each)
+        int totalTextures = textureList.Count;
+        int albumSize = 2048;
+        int albumCount = Mathf.CeilToInt((float)totalTextures / albumSize);
+        // Cap at 4 albums (8192 images total)
+        albumCount = Mathf.Min(albumCount, 4);
+
+        imageSpriteArrays = new Texture2DArray[albumCount];
+        imageSpriteNormals = new Texture2DArray[albumCount];
+
+        for (int albumIdx = 0; albumIdx < albumCount; albumIdx++)
         {
-            var pixels = textureList[i].GetPixels();
-            imageSpriteArray.SetPixels(pixels, i);
-            imageSpriteNormals.SetPixels(TextureTools.Bevel(pixels, 32,32), i);
+            int startIdx = albumIdx * albumSize;
+            int countInAlbum = Mathf.Min(totalTextures - startIdx, albumSize);
+            
+            var array = new Texture2DArray(32, 32, countInAlbum, TextureFormat.ARGB32, false);
+            var normals = new Texture2DArray(32, 32, countInAlbum, TextureFormat.ARGB32, false);
+
+            for (int i = 0; i < countInAlbum; i++)
+            {
+                var pixels = textureList[startIdx + i].GetPixels();
+                array.SetPixels(pixels, i);
+                normals.SetPixels(TextureTools.Bevel(pixels, 32, 32), i);
+            }
+
+            array.Apply();
+            normals.Apply();
+            imageSpriteArrays[albumIdx] = array;
+            imageSpriteNormals[albumIdx] = normals;
+            
+            Shader.SetGlobalTexture("_ImageAtlas" + albumIdx, array);
+            Shader.SetGlobalTexture("_ImageBumpAtlas" + albumIdx, normals);
         }
-        imageSpriteArray.Apply();
-        imageSpriteNormals.Apply();
-        Shader.SetGlobalTexture("_ImageAtlas", imageSpriteArray);
-        Shader.SetGlobalTexture("_ImageBumpAtlas", imageSpriteNormals);
+
+        // Keep legacy globals for partial compatibility if needed, using album 0
+        if (albumCount > 0)
+        {
+            Shader.SetGlobalTexture("_ImageAtlas", imageSpriteArrays[0]);
+            Shader.SetGlobalTexture("_ImageBumpAtlas", imageSpriteNormals[0]);
+        }
+    }
+
+    private Texture2D LoadCreatureSprite(string token)
+    {
+        // 1. Tenta carregar o token exato
+        Texture2D sprite = Resources.Load<Texture2D>("Images/Creatures/" + token);
+        if (sprite != null) return sprite;
+
+        // 2. Tenta carregar com espaços em vez de underscores (ex: "ARMADILLO_MAN" -> "ARMADILLO MAN")
+        string spaceToken = token.Replace('_', ' ');
+        sprite = Resources.Load<Texture2D>("Images/Creatures/" + spaceToken);
+        if (sprite != null) return sprite;
+
+        // 3. Fallbacks de Prefixos comuns (BIRD_, GIANT_, WORM_, FISH_, etc.)
+        string[] prefixes = { "BIRD_", "GIANT_", "WORM_", "CAVE_", "FISH_", "DIVINE_", "ITEM_" };
+        foreach (var prefix in prefixes)
+        {
+            if (token.StartsWith(prefix))
+            {
+                string strippedToken = token.Substring(prefix.Length);
+                sprite = Resources.Load<Texture2D>("Images/Creatures/" + strippedToken);
+                if (sprite == null) sprite = Resources.Load<Texture2D>("Images/Creatures/" + strippedToken.Replace('_', ' '));
+                if (sprite != null) return sprite;
+            }
+        }
+
+        // 4. Fallback genérico: Tenta remover qualquer coisa antes do primeiro underscore
+        // (ex: "HF2153_DIVINE_1" -> "DIVINE_1" ou "DIVINE")
+        int firstUnderscore = token.IndexOf('_');
+        if (firstUnderscore > 0 && firstUnderscore < token.Length - 1)
+        {
+            string suffix = token.Substring(firstUnderscore + 1);
+            sprite = Resources.Load<Texture2D>("Images/Creatures/" + suffix);
+            if (sprite == null) sprite = Resources.Load<Texture2D>("Images/Creatures/" + suffix.Replace('_', ' '));
+            if (sprite != null) return sprite;
+        }
+
+        // 5. Limpeza de números e underscores no final (ex: "CAT_1" -> "CAT")
+        string cleanToken = token.TrimEnd('1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '_');
+        if (cleanToken != token && cleanToken.Length > 0)
+        {
+            sprite = Resources.Load<Texture2D>("Images/Creatures/" + cleanToken);
+            if (sprite != null) return sprite;
+            sprite = Resources.Load<Texture2D>("Images/Creatures/" + cleanToken.Replace('_', ' '));
+            if (sprite != null) return sprite;
+        }
+
+        return null; // Não encontrado
     }
 
     #endregion

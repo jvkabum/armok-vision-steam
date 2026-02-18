@@ -16,8 +16,14 @@ Shader "Custom/CreatureSprite" {
 
 		#pragma target 3.5
 
-        UNITY_DECLARE_TEX2DARRAY(_MatTex);
-        UNITY_DECLARE_TEX2DARRAY(_BumpMap);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas0);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas1);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas2);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas3);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas0);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas1);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas2);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas3);
 
 		struct Input {
 			float2 uv_MatTex;
@@ -35,13 +41,29 @@ Shader "Custom/CreatureSprite" {
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
             float layerIndex = UNITY_ACCESS_INSTANCED_PROP(_LayerIndex_arr, _LayerIndex);
-            fixed4 layerPixel = UNITY_SAMPLE_TEX2DARRAY(_MatTex, float3(IN.uv_MatTex.xy, layerIndex));
+            fixed4 layerPixel;
+            float3 normal;
+
+            if (layerIndex < 2048) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas0, float3(IN.uv_MatTex.xy, layerIndex));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas0, float3(IN.uv_MatTex.xy, layerIndex)));
+            } else if (layerIndex < 4096) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas1, float3(IN.uv_MatTex.xy, layerIndex - 2048));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas1, float3(IN.uv_MatTex.xy, layerIndex - 2048)));
+            } else if (layerIndex < 6144) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas2, float3(IN.uv_MatTex.xy, layerIndex - 4096));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas2, float3(IN.uv_MatTex.xy, layerIndex - 4096)));
+            } else {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas3, float3(IN.uv_MatTex.xy, layerIndex - 6144));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas3, float3(IN.uv_MatTex.xy, layerIndex - 6144)));
+            }
+
             fixed4 layerColor = UNITY_ACCESS_INSTANCED_PROP(_LayerColor_arr, _LayerColor);
 
             o.Albedo = layerPixel.rgb * layerColor.rgb;
             o.Metallic = max((layerColor.a * 2) - 1, 0);
             o.Alpha = layerPixel.a;
-            o.Normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_BumpMap, float3(IN.uv_MatTex.xy, layerIndex)));
+            o.Normal = normal;
 		}
 		ENDCG
 	}

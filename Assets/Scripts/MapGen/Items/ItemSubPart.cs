@@ -18,15 +18,15 @@ public class ItemSubPart : MonoBehaviour {
             originalMaterial = meshRenderer.sharedMaterial;
 
         Color partColor = ContentLoader.GetColor(improvement.material);
-        float textureIndex = ContentLoader.GetPatternIndex(improvement.material);
-        float shapeIndex = ContentLoader.GetShapeIndex(improvement.material);
+        int textureIndex = ContentLoader.GetPatternIndex(improvement.material);
+        int shapeIndex = ContentLoader.GetShapeIndex(improvement.material);
 
         meshRenderer.sharedMaterial = ContentLoader.getFinalMaterial(originalMaterial, partColor.a);
 
         MaterialPropertyBlock prop = new MaterialPropertyBlock();
         prop.SetColor("_MatColor", partColor);
-        prop.SetFloat("_MatIndex", textureIndex);
-        prop.SetFloat("_ShapeIndex", shapeIndex);
+        prop.SetInt("_MatIndex", textureIndex);
+        prop.SetInt("_ShapeIndex", shapeIndex);
         meshRenderer.SetPropertyBlock(prop);
     }
 }

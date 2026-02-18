@@ -53,8 +53,8 @@ public class ItemModel : MonoBehaviour, IClickable
             originalMaterial = meshRenderer.sharedMaterial;
 
         Color partColor = ContentLoader.GetColor(itemInput);
-        float textureIndex = ContentLoader.GetPatternIndex(itemInput.material);
-        float shapeIndex = ContentLoader.GetShapeIndex(itemInput.material);
+        int textureIndex = ContentLoader.GetPatternIndex(itemInput.material);
+        int shapeIndex = ContentLoader.GetShapeIndex(itemInput.material);
 
         meshRenderer.sharedMaterial = ContentLoader.getFinalMaterial(originalMaterial, partColor.a);
 
@@ -68,12 +68,12 @@ public class ItemModel : MonoBehaviour, IClickable
 
         MaterialPropertyBlock prop = new MaterialPropertyBlock();
         prop.SetColor("_MatColor", partColor);
-        prop.SetFloat("_MatIndex", textureIndex);
-        prop.SetFloat("_ShapeIndex", shapeIndex);
+        prop.SetInt("_MatIndex", textureIndex);
+        prop.SetInt("_ShapeIndex", shapeIndex);
         if (unit != null)
             prop.SetColor("_JobColor", unit.profession_color);
         if (ImageManager.Instance != null)
-            prop.SetFloat("_SpriteIndex", ImageManager.Instance.GetItemTile(itemInput.type));
+            prop.SetInt("_SpriteIndex", ImageManager.Instance.GetItemTile(itemInput.type));
         meshRenderer.SetPropertyBlock(prop);
 
 

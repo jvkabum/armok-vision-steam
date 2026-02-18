@@ -19,6 +19,7 @@ public static class TextureScale
     private static Color[] texColors;
     private static Color[] newColors;
     private static int w;
+    private static int h;
     private static float ratioX;
     private static float ratioY;
     private static int w2;
@@ -49,8 +50,8 @@ public static class TextureScale
         newColors = new Color[newWidth * newHeight];
         if (useBilinear)
         {
-            ratioX = 1.0f / ((float)newWidth / (oldWidth - 1));
-            ratioY = 1.0f / ((float)newHeight / (oldHeight - 1));
+            ratioX = oldWidth > 1 ? 1.0f / ((float)newWidth / (oldWidth - 1)) : 0f;
+            ratioY = oldHeight > 1 ? 1.0f / ((float)newHeight / (oldHeight - 1)) : 0f;
         }
         else
         {
@@ -58,6 +59,7 @@ public static class TextureScale
             ratioY = ((float)oldHeight) / newHeight;
         }
         w = oldWidth;
+        h = oldHeight;
         w2 = newWidth;
         var cores = Mathf.Min(SystemInfo.processorCount, newHeight);
         var slice = newHeight / cores;
@@ -122,8 +124,12 @@ public static class TextureScale
             {
                 int xFloor = (int)Mathf.Floor(x * ratioX);
                 var xLerp = x * ratioX - xFloor;
-                newColors[yw + x] = ColorLerpUnclamped(ColorLerpUnclamped(texColors[y1 + xFloor], texColors[y1 + xFloor + 1], xLerp),
-                                                       ColorLerpUnclamped(texColors[y2 + xFloor], texColors[y2 + xFloor + 1], xLerp),
+                int x1 = Mathf.Clamp(xFloor, 0, w - 1);
+                int x2 = Mathf.Clamp(xFloor + 1, 0, w - 1);
+                int y2Idx = Mathf.Clamp(yFloor + 1, 0, h - 1) * w;
+
+                newColors[yw + x] = ColorLerpUnclamped(ColorLerpUnclamped(texColors[y1 + x1], texColors[y1 + x2], xLerp),
+                                                       ColorLerpUnclamped(texColors[y2Idx + x1], texColors[y2Idx + x2], xLerp),
                                                        y * ratioY - yFloor);
             }
         }
@@ -142,7 +148,7 @@ public static class TextureScale
             var yw = y * w2;
             for (var x = 0; x < w2; x++)
             {
-                newColors[yw + x] = texColors[(int)(thisY + ratioX * x)];
+                newColors[yw + x] = texColors[Mathf.Clamp((int)(thisY + ratioX * x), 0, texColors.Length - 1)];
             }
         }
 

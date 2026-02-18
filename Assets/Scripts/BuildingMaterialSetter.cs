@@ -16,7 +16,7 @@ public class BuildingMaterialSetter : MonoBehaviour
             var renderer = part.GetComponent<MeshRenderer>();
             MaterialPropertyBlock prop = new MaterialPropertyBlock();
             prop.SetColor("_MatColor", set.color);
-            prop.SetFloat("_MatIndex", set.patternIndex);
+            prop.SetInt("_MatIndex", set.patternIndex);
             renderer.SetPropertyBlock(prop);
         }
         foreach (var part in FindObjectsOfType<ItemModel>())

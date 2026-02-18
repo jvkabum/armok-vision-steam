@@ -39,8 +39,8 @@ namespace Building
         public void UpdatePart(BuildingInstance buildingInput)
         {
             Color partColor = new Color32(128,128,128,128);
-            float textureIndex = 0;
-            float shapeIndex = 0;
+            int textureIndex = 0;
+            int shapeIndex = 0;
             if (string.IsNullOrEmpty(item) || ItemTokenList.ItemLookup == null)
             {
                 if (index < 0)
@@ -116,8 +116,8 @@ namespace Building
 
             MaterialPropertyBlock prop = new MaterialPropertyBlock();
             prop.SetColor("_MatColor", partColor);
-            prop.SetFloat("_MatIndex", textureIndex);
-            prop.SetFloat("_ShapeIndex", shapeIndex);
+            prop.SetInt("_MatIndex", textureIndex);
+            prop.SetInt("_ShapeIndex", shapeIndex);
             meshRenderer.SetPropertyBlock(prop);
         }
     }

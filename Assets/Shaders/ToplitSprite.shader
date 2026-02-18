@@ -20,8 +20,14 @@ Shader "Custom/ToplitSprite" {
 
         #pragma target 3.5
 
-        UNITY_DECLARE_TEX2DARRAY(_SpriteArray);
-        UNITY_DECLARE_TEX2DARRAY(_NormalArray);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas0);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas1);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas2);
+        UNITY_DECLARE_TEX2DARRAY(_ImageAtlas3);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas0);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas1);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas2);
+        UNITY_DECLARE_TEX2DARRAY(_ImageBumpAtlas3);
 
 		struct Input {
 			float2 uv_MainTex;
@@ -33,13 +39,28 @@ Shader "Custom/ToplitSprite" {
         int _SpriteIndex;
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			// Albedo comes from a texture tinted by color
-            fixed4 c = _Color * UNITY_SAMPLE_TEX2DARRAY(_SpriteArray, float3(IN.uv_MainTex, _SpriteIndex));
+            fixed4 layerPixel;
+            float3 normal;
+
+            if (_SpriteIndex < 2048) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas0, float3(IN.uv_MainTex.xy, _SpriteIndex));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas0, float3(IN.uv_MainTex.xy, _SpriteIndex)));
+            } else if (_SpriteIndex < 4096) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas1, float3(IN.uv_MainTex.xy, _SpriteIndex - 2048));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas1, float3(IN.uv_MainTex.xy, _SpriteIndex - 2048)));
+            } else if (_SpriteIndex < 6144) {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas2, float3(IN.uv_MainTex.xy, _SpriteIndex - 4096));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas2, float3(IN.uv_MainTex.xy, _SpriteIndex - 4096)));
+            } else {
+                layerPixel = UNITY_SAMPLE_TEX2DARRAY(_ImageAtlas3, float3(IN.uv_MainTex.xy, _SpriteIndex - 6144));
+                normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_ImageBumpAtlas3, float3(IN.uv_MainTex.xy, _SpriteIndex - 6144)));
+            }
+
+            fixed4 c = _Color * layerPixel;
             o.Albedo = c.rgb;
-			// Metallic and smoothness come from slider variables
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
-            o.Normal = UnpackNormal(UNITY_SAMPLE_TEX2DARRAY(_NormalArray, float3(IN.uv_MainTex, _SpriteIndex)));
+            o.Normal = normal;
 			o.Alpha = c.a;
 		}
 		ENDCG

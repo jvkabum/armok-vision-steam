@@ -24,15 +24,15 @@ public class ItemImage : MonoBehaviour {
             originalMaterial = meshRenderer.sharedMaterial;
 
         Color partColor = ContentLoader.GetColor(itemInput);
-        float textureIndex = ContentLoader.GetPatternIndex(itemInput.material);
-        float shapeIndex = ContentLoader.GetShapeIndex(itemInput.material);
+        int textureIndex = ContentLoader.GetPatternIndex(itemInput.material);
+        int shapeIndex = ContentLoader.GetShapeIndex(itemInput.material);
 
         meshRenderer.sharedMaterial = ContentLoader.getFinalMaterial(originalMaterial, partColor.a);
 
         MaterialPropertyBlock prop = new MaterialPropertyBlock();
         prop.SetColor("_MatColor", partColor);
-        prop.SetFloat("_MatIndex", textureIndex);
-        prop.SetFloat("_ShapeIndex", shapeIndex);
+        prop.SetInt("_MatIndex", textureIndex);
+        prop.SetInt("_ShapeIndex", shapeIndex);
         meshRenderer.SetPropertyBlock(prop);
 
         if (meshFilter == null)
