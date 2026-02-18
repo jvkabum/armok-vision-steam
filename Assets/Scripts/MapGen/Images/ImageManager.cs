@@ -535,7 +535,7 @@ public class ImageManager : MonoBehaviour
                     subProgressBar.SetProgress(loadedCount / loadTotal, token);
                 loadedCount++;
 
-                Texture2D sprite = LoadCreatureSprite(token);
+                Texture2D sprite = GetReadableCopy(LoadCreatureSprite(token));
 
                 if (sprite == null)
                 {
@@ -561,16 +561,19 @@ public class ImageManager : MonoBehaviour
         foreach (var item in ItemRaws.Instance.ItemList)
         {
             string token = item.id;
-            Texture2D sprite = Resources.Load<Texture2D>("Images/Items/" + token);
-            if (subProgressBar != null)
-                subProgressBar.SetProgress(loadedCount / loadTotal, token);
-            loadedCount++;
-            if (sprite == null)
+            Texture2D rawSprite = Resources.Load<Texture2D>("Images/Items/" + token);
+            if (rawSprite == null)
             {
                 //Try again without stupid numbers
                 token = Regex.Replace(token, @"\d", "");
-                sprite = Resources.Load<Texture2D>("Images/Items/" + token);
+                rawSprite = Resources.Load<Texture2D>("Images/Items/" + token);
             }
+
+            Texture2D sprite = GetReadableCopy(rawSprite);
+            if (subProgressBar != null)
+                subProgressBar.SetProgress(loadedCount / loadTotal, token);
+            loadedCount++;
+
             if (sprite == null)
             {
                 //Debug.LogWarning("Could not find art image for " + token);
@@ -681,6 +684,37 @@ public class ImageManager : MonoBehaviour
         }
 
         return null; // Não encontrado
+    }
+
+    private Texture2D GetReadableCopy(Texture2D source)
+    {
+        if (source == null) return null;
+
+        // Create a temporary RenderTexture of the same size as the texture
+        RenderTexture tmp = RenderTexture.GetTemporary(
+                            source.width,
+                            source.height,
+                            0,
+                            RenderTextureFormat.Default,
+                            RenderTextureReadWrite.Linear);
+
+        // Blit the pixels on texture to the RenderTexture
+        Graphics.Blit(source, tmp);
+
+        RenderTexture previous = RenderTexture.active;
+        RenderTexture.active = tmp;
+
+        // Create a new readable Texture2D to copy the pixels to it
+        Texture2D myTexture2D = new Texture2D(source.width, source.height);
+
+        // Copy the pixels from the RenderTexture to the new Texture
+        myTexture2D.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
+        myTexture2D.Apply();
+
+        RenderTexture.active = previous;
+        RenderTexture.ReleaseTemporary(tmp);
+
+        return myTexture2D;
     }
 
     #endregion
