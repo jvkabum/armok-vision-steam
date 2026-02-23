@@ -504,11 +504,21 @@ public class ImageManager : MonoBehaviour
             mainProgressBar.SetProgress("Loading images");
 
         List<Texture2D> textureList = new List<Texture2D>();
+
+        if (CreatureRaws.Instance == null || ItemRaws.Instance.ItemList == null)
+        {
+            Debug.LogError("CreatureRaws or ItemRaws instance is null!");
+            yield break;
+        }
+
         int loadedCount = 0;
-        float loadTotal = 0;
-        if (DFConnection.Instance != null && CreatureRaws.Instance != null)
-            loadTotal += CreatureRaws.Instance.Count;
-        loadTotal += ItemRaws.Instance.ItemList.Count;
+        float loadTotal = CreatureRaws.Instance.Count + ItemRaws.Instance.ItemList.Count;
+        
+        if (dfSpriteMap == null)
+        {
+            Debug.LogError("dfSpriteMap is NOT assigned in ImageManager!");
+            yield break;
+        }
         //DFTiles:
         {
             int sourceWidth = dfSpriteMap.width / 16;
@@ -530,7 +540,10 @@ public class ImageManager : MonoBehaviour
         if (DFConnection.Instance != null && CreatureRaws.Instance != null)
             foreach (var creature in CreatureRaws.Instance)
             {
+                if (creature == null) continue;
                 string token = creature.creature_id;
+                if (token == null) token = "UNKNOWN";
+                
                 if (subProgressBar != null)
                     subProgressBar.SetProgress(loadedCount / loadTotal, token);
                 loadedCount++;
@@ -560,7 +573,10 @@ public class ImageManager : MonoBehaviour
         //IMAGE_ITEM:
         foreach (var item in ItemRaws.Instance.ItemList)
         {
+            if (item == null) continue;
             string token = item.id;
+            if (token == null) token = "UNKNOWN_ITEM";
+
             Texture2D rawSprite = Resources.Load<Texture2D>("Images/Items/" + token);
             if (rawSprite == null)
             {
@@ -600,11 +616,15 @@ public class ImageManager : MonoBehaviour
         int totalTextures = textureList.Count;
         int albumSize = 2048;
         int albumCount = Mathf.CeilToInt((float)totalTextures / albumSize);
+        if (albumCount == 0) albumCount = 1; // At least one even if empty
+
         // Cap at 4 albums (8192 images total)
         albumCount = Mathf.Min(albumCount, 4);
 
-        imageSpriteArrays = new Texture2DArray[albumCount];
-        imageSpriteNormals = new Texture2DArray[albumCount];
+        if (imageSpriteArrays == null || imageSpriteArrays.Length != albumCount)
+            imageSpriteArrays = new Texture2DArray[albumCount];
+        if (imageSpriteNormals == null || imageSpriteNormals.Length != albumCount)
+            imageSpriteNormals = new Texture2DArray[albumCount];
 
         for (int albumIdx = 0; albumIdx < albumCount; albumIdx++)
         {
@@ -616,7 +636,12 @@ public class ImageManager : MonoBehaviour
 
             for (int i = 0; i < countInAlbum; i++)
             {
-                var pixels = textureList[startIdx + i].GetPixels();
+                Texture2D tex = textureList[startIdx + i];
+                if (tex == null) {
+                    Debug.LogError($"Texture at index {startIdx + i} is NULL!");
+                    continue;
+                }
+                var pixels = tex.GetPixels();
                 array.SetPixels(pixels, i);
                 normals.SetPixels(TextureTools.Bevel(pixels, 32, 32), i);
             }

@@ -1,0 +1,173 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-02-23T21:13:54.465Z",
+  "stack": {
+    "primaryLanguage": "csharp",
+    "languages": [
+      "csharp"
+    ],
+    "frameworks": [],
+    "buildTools": [],
+    "testFrameworks": [],
+    "packageManager": null,
+    "isMonorepo": false,
+    "hasDocker": false,
+    "hasCI": false
+  },
+  "structure": {
+    "totalFiles": 51694,
+    "rootPath": ".",
+    "topDirectories": [
+      {
+        "name": "Assets",
+        "fileCount": 11750,
+        "description": "Static assets (images, fonts)"
+      },
+      {
+        "name": "Content",
+        "fileCount": 17,
+        "description": "Module directory"
+      },
+      {
+        "name": "lfs",
+        "fileCount": 3,
+        "description": "Lf definitions"
+      },
+      {
+        "name": "Library",
+        "fileCount": 39831,
+        "description": "Shared library code"
+      },
+      {
+        "name": "Logs",
+        "fileCount": 14,
+        "description": "Log definitions"
+      },
+      {
+        "name": "Packages",
+        "fileCount": 2,
+        "description": "Package definitions"
+      },
+      {
+        "name": "ProjectSettings",
+        "fileCount": 26,
+        "description": "Projectsetting definitions"
+      },
+      {
+        "name": "ProtoGen",
+        "fileCount": 13,
+        "description": "Module directory"
+      },
+      {
+        "name": "ReleaseFiles",
+        "fileCount": 3,
+        "description": "Releasefile definitions"
+      },
+      {
+        "name": "Temp",
+        "fileCount": 12,
+        "description": "Template files"
+      },
+      {
+        "name": "UIElementsSchema",
+        "fileCount": 11,
+        "description": "Module directory"
+      },
+      {
+        "name": "UserSettings",
+        "fileCount": 3,
+        "description": "Usersetting definitions"
+      }
+    ],
+    "languageDistribution": [
+      {
+        "extension": ".bin",
+        "count": 27162
+      },
+      {
+        "extension": ".meta",
+        "count": 8714
+      },
+      {
+        "extension": ".png",
+        "count": 3015
+      },
+      {
+        "extension": ".cs",
+        "count": 1940
+      },
+      {
+        "extension": ".mat",
+        "count": 1055
+      },
+      {
+        "extension": ".prefab",
+        "count": 594
+      },
+      {
+        "extension": ".fbx",
+        "count": 279
+      },
+      {
+        "extension": ".md",
+        "count": 261
+      },
+      {
+        "extension": ".asset",
+        "count": 226
+      },
+      {
+        "extension": ".mvfrm",
+        "count": 224
+      }
+    ]
+  },
+  "architecture": {
+    "layers": [],
+    "patterns": [],
+    "entryPoints": [],
+    "mainEntryPoints": [],
+    "moduleExports": []
+  },
+  "symbols": {
+    "classes": [
+      {
+        "name": "AdvertiserOptInDrawer",
+        "kind": "class",
+        "file": "Assets\\Plugins\\Editor\\AdvertiserOptIn.js",
+        "line": 17,
+        "exported": false
+      },
+      {
+        "name": "RangedTooltipDrawer",
+        "kind": "class",
+        "file": "Assets\\Plugins\\Editor\\RangedTooltipDrawer.js",
+        "line": 22,
+        "exported": false,
+        "description": "Custom Property Drawer for Ranged inspector properties that also"
+      }
+    ],
+    "interfaces": [],
+    "functions": [],
+    "types": [],
+    "enums": []
+  },
+  "publicAPI": [],
+  "dependencies": {
+    "mostImported": []
+  },
+  "stats": {
+    "totalSymbols": 2,
+    "exportedSymbols": 0,
+    "analysisTimeMs": 3540
+  },
+  "keyFiles": [],
+  "navigation": {
+    "tests": "src/**/*.test.ts",
+    "config": [],
+    "types": [],
+    "mainLogic": [
+      "src"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+project:
+  name: "armok-vision-mapping-context"
+  scale: LARGE
+  started: "2026-02-23T21:18:56.632Z"
+  current_phase: P
+
+phases:
+  P:
+    status: in_progress
+    started_at: "2026-02-23T21:18:56.632Z"
+  R:
+    status: pending
+  E:
+    status: pending
+  V:
+    status: pending
+  C:
+    status: pending
+
